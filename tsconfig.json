@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "Dist",
+    "strict": false,
+    "target": "es5",
+    // "moduleResolution": "node"
+    "rootDir": "./src",
+    "sourceMap": true,
+    "module": "CommonJS",
+    // "esModuleInterop": true
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
+}
