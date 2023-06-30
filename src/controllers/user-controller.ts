@@ -2,8 +2,9 @@ import User from "../models/user-models";
 import generate from "../utils/generateTokensUtils";
 import findByCredentials from "../utils/findByCredentials";
 import * as bcrypt from "bcryptjs";
+import { Request, Response, NextFunction } from "express";
 
-export async function postuser(reqBody) {
+export async function postuser(reqBody: Request) {
   const user = new User(reqBody);
   const { password } = user;
 
@@ -17,13 +18,13 @@ export async function postuser(reqBody) {
   return { user, token };
 }
 
-export function userLogin(user) {
+export function userLogin(user: { _id: string }) {
   const token = generate(user);
 
   return token;
 }
 
-export function validateUser(updates) {
+export function validateUser(updates: string[]) {
   const allowedUpdates = ["name", "email", "password", "age"];
   updates = ["name", "password"];
 
@@ -33,24 +34,45 @@ export function validateUser(updates) {
 
   return isValidOperation;
 }
+// interface reqBodytype extends Request {
+//   name: string;
+//   password: string;
+//   age: number;
 
-export async function updateUser(updates, user, reqBody) {
-  console.log("🚀 ~ file: user-controller.ts:47 ~ updateUser ~ user:", user);
-  updates.forEach((update) => (user[update] = reqBody[update]));
+interface usertype {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  age: number;
+  tokens: {
+    token: string;
+    _id: string;
+  };
+}
+export async function updateUser(updates: string[], user: any, reqBody: any) {
+  let { password } = reqBody;
 
+  if (password) {
+    reqBody["password"] = await bcrypt.hash(password, 8);
+  }
+
+  updates.forEach((update) => {
+    return (user[update] = reqBody[update]);
+  });
   await user.save();
 
   return user;
 }
 
-export async function loginUser(email, password) {
-  const user = await findByCredentials(email, password);
-  const token = await userLogin(user);
+export async function loginUser(email: string, password: string) {
+  const user: any = await findByCredentials(email, password);
+  const token: string = await userLogin(user);
 
   return { user, token };
 }
 
-export async function deleteUser(requser_id) {
+export async function deleteUser(requser_id: string) {
   await User.findOneAndDelete({
     _id: requser_id,
   });

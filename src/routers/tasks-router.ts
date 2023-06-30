@@ -36,10 +36,14 @@ taskRouter.post("", auth, (req, res) => {
     res.status(badRequestC).send(badRequest);
   }
 });
-
-taskRouter.get("", auth, async (req, res) => {
+interface reqBodytype extends Request {
+  name: string;
+  password: string;
+  age: number;
+}
+taskRouter.get("", auth, async (req: Request, res) => {
   const { user } = req.body;
-  const { query } = req;
+  const { query }: any = req;
 
   const { match, sort, limit, skip } = displayTask(query);
 
@@ -71,16 +75,15 @@ taskRouter.get("/:id", auth, async (req, res) => {
     }
 
     return res.send({ data: task });
-  } catch (e) {
-    console.log("🚀 ~ file: tasks-router.ts:76 ~ taskRouter.get ~ e:", e);
-  }
+  } catch (e) {}
 
   res.status(serverErrorC).send(serverError);
 });
 
 taskRouter.patch("/:id", auth, async (req, res) => {
-  const updates = ["completed"];
-  const isValidOperation = validation(updates);
+  const update: string[] = Object.keys(req.body.data);
+
+  const isValidOperation = validation(update);
   if (!isValidOperation) {
     return res.status(badRequestC).send(badRequest);
   }
@@ -93,7 +96,7 @@ taskRouter.patch("/:id", auth, async (req, res) => {
     if (!task) {
       return res.status(notFoundC).send(notFound);
     }
-    const rettask = await taskUpdate(task, updates, req.body);
+    const rettask = await taskUpdate(task, update, req.body.data);
 
     res.send({ data: rettask });
   } catch (e) {

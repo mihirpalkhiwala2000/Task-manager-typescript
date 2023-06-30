@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       unique: true,
       lowercase: true,
-      validate(value) {
+      validate(value: string) {
         if (!validator.isEmail(value)) {
           throw new Error(emailError);
         }
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 7,
       trim: true,
-      validate(value) {
+      validate(value: string) {
         if (value.toLowerCase().includes("password")) {
           throw new Error(passError);
         }
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
     age: {
       type: Number,
       default: 0,
-      validate(value) {
+      validate(value: number) {
         if (value < 0) {
           throw new Error(ageError);
         }
@@ -72,31 +72,6 @@ userSchema.methods.toJSON = function () {
   delete userObject.tokens;
   return userObject;
 };
-
-// userSchema.statics.findByCredentials = async (email, password) => {
-//   const user = await User.findOne({ email });
-
-//   if (!user) {
-//     throw new Error("Unable to login");
-//   }
-//   const isMatch = await bcrypt.compare(password, user.password);
-
-//   if (!isMatch) {
-//     throw new Error("Unable to login");
-//   }
-//   return user;
-// };
-
-// Hash the password before saving
-// userSchema.pre("save", async function (next) {
-//   const user = this;
-
-//   if (user.isModified("password")) {
-//     user.password = await bcrypt.hash(user.password, 8);
-//   }
-
-//   next();
-// });
 
 // Delete user task when user is removed
 // userSchema.pre("findOneAndDelete", async function (next) {

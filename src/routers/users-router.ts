@@ -14,8 +14,15 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/user-controller";
+import { Request, Response, NextFunction } from "express";
 
-userRouter.post("", async (req, res) => {
+interface ReqBodytype {
+  name: string;
+  password: string;
+  age: number;
+}
+
+userRouter.post("", async (req: Request, res: Response) => {
   try {
     const { user, token } = await postuser(req.body);
 
@@ -45,7 +52,7 @@ userRouter.post("/logout", auth, async (req, res) => {
   try {
     const { user } = req.body;
     const { token } = req.body;
-    user.tokens = user.tokens.filter((tokenin) => {
+    user.tokens = user.tokens.filter((tokenin: { token: string }) => {
       return tokenin.token !== token;
     });
     await user.save();
@@ -63,7 +70,7 @@ userRouter.get("/me", auth, async (req, res) => {
 });
 
 userRouter.patch("/me", auth, async (req, res) => {
-  const updates = Object.keys(req.body) as any;
+  const updates = Object.keys(req.body.data);
 
   const isValidOperation = validateUser(updates);
 
@@ -73,7 +80,8 @@ userRouter.patch("/me", auth, async (req, res) => {
   try {
     const { user } = req.body;
 
-    const retuser = await updateUser(updates, user, req.body);
+    const retuser = await updateUser(updates, user, req.body.data);
+
     res.send({ data: retuser });
   } catch (e) {
     res.status(badRequestC).send(badRequest);

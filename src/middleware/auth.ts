@@ -6,13 +6,16 @@ import constants from "../constant";
 const { errorMsgs, statusCodes } = constants;
 const { unauthorized } = errorMsgs;
 const { unauthorizedC } = statusCodes;
-dotenv.config();
+import { Request, Response, NextFunction } from "express";
 
-const auth = async (req, res, next) => {
+const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.header("Authorization").replace("Bearer ", "");
+    const token = req.header("Authorization")?.replace("Bearer ", "") as string;
 
-    const decoded = jwt.verify(token, process.env.JWT_CODE) as jwt.JwtPayload;
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_CODE as string
+    ) as jwt.JwtPayload;
 
     const user = await User.findOne({
       _id: decoded._id,

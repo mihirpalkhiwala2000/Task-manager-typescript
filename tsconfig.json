@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "Dist",
-    "strict": false,
+    "strict": true,
     "target": "es5",
     // "moduleResolution": "node"
     "rootDir": "./src",

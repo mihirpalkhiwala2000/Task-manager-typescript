@@ -1,6 +1,12 @@
 import Task from "../models/task-models";
-export function displayTask(reqQuery) {
-  let sort = {};
+export function displayTask(reqQuery: {
+  completed: string;
+  sortBy: string;
+  limit: string;
+  skip: string;
+}) {
+  let parts: string[];
+  let sort: any;
   let match: { completed?: boolean } = {};
 
   if (reqQuery.completed) {
@@ -8,9 +14,8 @@ export function displayTask(reqQuery) {
   }
 
   if (reqQuery.sortBy) {
-    let val = reqQuery.sortBy === "desc" ? -1 : 1;
-    let key = reqQuery.sortBy;
-    sort[key] = val;
+    parts = reqQuery.sortBy.split(":");
+    sort[parts[0]] = parts[1] === "desc" ? -1 : 1;
   }
 
   const limit = parseInt(reqQuery.limit);
@@ -19,7 +24,7 @@ export function displayTask(reqQuery) {
   return { match, sort, limit, skip };
 }
 
-export function validation(updates) {
+export function validation(updates: string[]) {
   const allowedUpdates = ["description", "completed"];
   const isValidOperation = updates.every((update) => {
     return allowedUpdates.includes(update);
@@ -27,33 +32,47 @@ export function validation(updates) {
 
   return isValidOperation;
 }
-export function createTask(task) {
+export function createTask(task: any) {
   task.save();
 }
-
-export async function findTask(_id, reqUser) {
+interface usertype {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  age: number;
+  tokens: {
+    token: string;
+  };
+}
+interface reqBodytype extends Request {
+  name: string;
+  password: string;
+  age: number;
+}
+export async function findTask(_id: string, reqUser: usertype) {
   const task = await Task.findOne({ _id, owner: reqUser._id });
   return task;
 }
-export async function findingUser(_id, reqUser) {
+export async function findingUser(_id: string, reqUser: usertype) {
   const task = Task.findOne({
     _id: _id,
     owner: reqUser._id,
   });
   return task;
 }
-export async function taskUpdate(task, updates, reqBody) {
+export async function taskUpdate(task: any, updates: string[], reqBody: any) {
   updates.forEach((update) => (task[update] = reqBody[update]));
   await task.save();
 
   return task;
 }
 
-export function displayPartiTask(_id, reqUser) {
+export function displayPartiTask(_id: string, reqUser: usertype) {
   return findTask(_id, reqUser);
 }
 
-export async function deleteTask(id, user_id) {
+export async function deleteTask(id: string, user_id: string) {
   const task = await Task.findOneAndDelete({
     _id: id,
     owner: user_id,

@@ -1,6 +1,6 @@
 import User from "../models/user-models";
 import * as bcrypt from "bcryptjs";
-let findByCredentials = async (email, password) => {
+let findByCredentials = async (email: string, password: string) => {
   const user = await User.findOne({ email });
 
   if (!user) {
