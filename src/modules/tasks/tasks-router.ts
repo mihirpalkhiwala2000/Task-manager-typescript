@@ -3,14 +3,15 @@ import { Request } from "express";
 const taskRouter = express.Router();
 const app = express();
 export default taskRouter;
-import auth from "../middleware/auth";
-import Task from "../models/task-models";
-import User from "../models/user-models";
-import constants from "../constant";
+import auth from "../../middleware/auth";
+import Task from "./task-models";
+import User from "../user/user-models";
+import constants from "../../constant";
 const { successMsgs, errorMsgs, statusCodes } = constants;
 const { success } = successMsgs;
 const { badRequest, serverError, notFound } = errorMsgs;
 const { createdC, badRequestC, notFoundC, serverErrorC } = statusCodes;
+import { querytype } from "./types";
 import {
   displayTask,
   validation,
@@ -19,47 +20,33 @@ import {
   displayPartiTask,
   taskUpdate,
   deleteTask,
-} from "../controllers/task-controller";
+} from "./task-controller";
 
 taskRouter.post("", auth, (req, res) => {
   const { user } = req.body;
 
-  const task = new Task({
-    ...req.body,
-    owner: user._id,
-  });
-
   try {
-    createTask(task);
+    const reqBody = req.body;
+    const owner = user._id;
+
+    const task = createTask(req.body, owner);
+
     res.status(createdC).send({ data: task, message: success });
   } catch (e) {
     res.status(badRequestC).send(badRequest);
   }
 });
-interface reqBodytype extends Request {
-  name: string;
-  password: string;
-  age: number;
-}
+
 taskRouter.get("", auth, async (req: Request, res) => {
   const { user } = req.body;
-  const { query }: any = req;
+  const query: querytype = req.query;
 
-  const { match, sort, limit, skip } = displayTask(query);
+  const tasks = await displayTask(query, user._id);
 
   try {
-    await user.populate({
-      path: "tasks",
-      match,
-      options: {
-        limit: limit,
-        skip: skip,
-        sort,
-      },
-    });
-
-    res.send({ data: user.tasks });
+    res.send({ data: tasks });
   } catch (e) {
+    console.log("🚀 ~ file: tasks-router.ts:58 ~ taskRouter.get ~ e:", e);
     res.status(serverErrorC).send(serverError);
   }
 });
@@ -96,7 +83,8 @@ taskRouter.patch("/:id", auth, async (req, res) => {
     if (!task) {
       return res.status(notFoundC).send(notFound);
     }
-    const rettask = await taskUpdate(task, update, req.body.data);
+
+    const rettask = await taskUpdate(task._id, req.body.data);
 
     res.send({ data: rettask });
   } catch (e) {

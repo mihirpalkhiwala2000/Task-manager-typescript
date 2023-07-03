@@ -1,8 +1,9 @@
 import * as express from "express";
+import User from "./user-models";
 const userRouter = express.Router();
 export default userRouter;
-import auth from "../middleware/auth";
-import constants from "../constant";
+import auth from "../../middleware/auth";
+import constants from "../../constant";
 const { successMsgs, errorMsgs, statusCodes } = constants;
 const { successfulLogout, created, login } = successMsgs;
 const { badRequest, serverError } = errorMsgs;
@@ -13,14 +14,8 @@ import {
   loginUser,
   updateUser,
   deleteUser,
-} from "../controllers/user-controller";
+} from "./user-controller";
 import { Request, Response, NextFunction } from "express";
-
-interface ReqBodytype {
-  name: string;
-  password: string;
-  age: number;
-}
 
 userRouter.post("", async (req: Request, res: Response) => {
   try {
@@ -55,7 +50,7 @@ userRouter.post("/logout", auth, async (req, res) => {
     user.tokens = user.tokens.filter((tokenin: { token: string }) => {
       return tokenin.token !== token;
     });
-    await user.save();
+    await User.create(user);
 
     res.send(successfulLogout);
   } catch (e) {
@@ -80,10 +75,11 @@ userRouter.patch("/me", auth, async (req, res) => {
   try {
     const { user } = req.body;
 
-    const retuser = await updateUser(updates, user, req.body.data);
+    const retuser = await updateUser(user, req.body.data);
 
     res.send({ data: retuser });
   } catch (e) {
+    console.log("🚀 ~ file: users-router.ts:87 ~ userRouter.patch ~ e:", e);
     res.status(badRequestC).send(badRequest);
   }
 });

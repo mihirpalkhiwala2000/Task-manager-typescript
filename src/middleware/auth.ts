@@ -1,5 +1,5 @@
 import * as jwt from "jsonwebtoken";
-import User from "../models/user-models";
+import User from "../modules/user/user-models";
 import * as dotenv from "dotenv";
 dotenv.config();
 import constants from "../constant";
@@ -8,7 +8,11 @@ const { unauthorized } = errorMsgs;
 const { unauthorizedC } = statusCodes;
 import { Request, Response, NextFunction } from "express";
 
-const auth = async (req: Request, res: Response, next: NextFunction) => {
+const auth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<undefined> => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "") as string;
 

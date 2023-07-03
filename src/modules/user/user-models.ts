@@ -1,10 +1,22 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 import validator from "validator";
-import constants from "../constant";
+import constants from "../../constant";
+import { ObjectId } from "mongoose";
 const { errorMsgs } = constants;
 const { emailError, passError, ageError } = errorMsgs;
 
-const userSchema = new mongoose.Schema(
+export interface userschematype {
+  name: string;
+  email: string;
+  password: string;
+  age: number;
+  tokens: any;
+  _id: ObjectId;
+  createdAt: NativeDate;
+  updatedAt: NativeDate;
+}
+
+const userSchema = new Schema<userschematype>(
   {
     name: {
       type: String,
@@ -58,12 +70,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.virtual("tasks", {
-  ref: "Task",
-  localField: "_id",
-  foreignField: "owner",
-});
-
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
@@ -73,14 +79,5 @@ userSchema.methods.toJSON = function () {
   return userObject;
 };
 
-// Delete user task when user is removed
-// userSchema.pre("findOneAndDelete", async function (next) {
-//   const user = this;
-
-//   await Task.deleteMany({ owner: user._conditions._id });
-
-//   next();
-// });
-
-const User = mongoose.model("User", userSchema);
+const User = model("User", userSchema);
 export default User;

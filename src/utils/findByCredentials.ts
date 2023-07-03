@@ -1,15 +1,21 @@
-import User from "../models/user-models";
+import User, { userschematype } from "../modules/user/user-models";
 import * as bcrypt from "bcryptjs";
-let findByCredentials = async (email: string, password: string) => {
+import constant from "../constant";
+const { errorMsgs } = constant;
+const { passError, emailError } = errorMsgs;
+let findByCredentials = async (
+  email: string,
+  password: string
+): Promise<userschematype> => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new Error("Unable to login");
+    throw new Error(passError);
   }
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    throw new Error("Unable to login");
+    throw new Error(emailError);
   }
   return user;
 };
