@@ -6,7 +6,7 @@ import auth from "../../middleware/auth";
 import constants from "../../constant";
 const { successMsgs, errorMsgs, statusCodes } = constants;
 const { success } = successMsgs;
-const { badRequest, serverError, notFound } = errorMsgs;
+const { badRequest, serverError, notFound, noTaskError } = errorMsgs;
 const { createdC, badRequestC, notFoundC, serverErrorC } = statusCodes;
 import { QueryType } from "./types";
 import {
@@ -18,6 +18,7 @@ import {
   taskUpdate,
   deleteTask,
 } from "./task-controller";
+import { Error } from "mongoose";
 
 taskRouter.post("", auth, (req, res) => {
   const { user } = req.body;
@@ -27,9 +28,9 @@ taskRouter.post("", auth, (req, res) => {
     const owner = user._id;
 
     const task = createTask(req.body, owner);
-
+    delete req.body.user;
     res.status(createdC).send({ data: task, message: success });
-  } catch (e) {
+  } catch (e: any) {
     res.status(badRequestC).send(badRequest);
   }
 });
@@ -39,6 +40,10 @@ taskRouter.get("", auth, async (req: Request, res) => {
   const query: QueryType = req.query;
 
   const tasks = await displayTask(query, user._id);
+  console.log(
+    "🚀 ~ file: tasks-router.ts:42 ~ taskRouter.get ~ tasks:",
+    tasks.length
+  );
 
   try {
     res.send({ data: tasks });
@@ -58,9 +63,9 @@ taskRouter.get("/:id", auth, async (req, res) => {
     }
 
     return res.send({ data: task });
-  } catch (e) {}
-
-  res.status(serverErrorC).send(serverError);
+  } catch (e) {
+    res.status(badRequestC).send(noTaskError);
+  }
 });
 
 taskRouter.patch("/:id", auth, async (req, res) => {

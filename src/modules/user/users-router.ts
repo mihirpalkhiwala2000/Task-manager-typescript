@@ -6,7 +6,8 @@ import auth from "../../middleware/auth";
 import constants from "../../constant";
 const { successMsgs, errorMsgs, statusCodes } = constants;
 const { successfulLogout, created, login } = successMsgs;
-const { badRequest, serverError } = errorMsgs;
+const { badRequest, serverError, emailError, emailLoginError, emailusedError } =
+  errorMsgs;
 const { createdC, badRequestC, serverErrorC } = statusCodes;
 import {
   postUser,
@@ -26,8 +27,8 @@ userRouter.post("", async (req: Request, res: Response) => {
       token: token,
       message: created,
     });
-  } catch (e) {
-    res.status(badRequestC).send(badRequest);
+  } catch (e: any) {
+    res.status(badRequestC).send(e.message);
   }
 });
 
@@ -38,8 +39,8 @@ userRouter.post("/login", async (req, res) => {
     const { user, token } = await loginUser(email, password);
 
     res.send({ user: user, token, message: login });
-  } catch (e) {
-    res.status(badRequestC).send(badRequest);
+  } catch (error: any) {
+    res.status(badRequestC).send(error.message);
   }
 });
 

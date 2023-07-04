@@ -11,9 +11,12 @@ const errorMsgs = {
   serverError: "There is an internal server error.",
   unauthorized: "Access denied, please login first",
   notFound: "Nothing relevant found. Please try again.",
-  emailError: "Email is invalid",
+  emailError: "Email id is invalid",
+  emailusedError: "Email already used",
+  emailLoginError: "No user found with this mail id.",
   passError: "Password is invalid",
   ageError: "Age must be positive",
+  noTaskError: "No such task available",
 };
 const statusCodes = {
   successC: 200,

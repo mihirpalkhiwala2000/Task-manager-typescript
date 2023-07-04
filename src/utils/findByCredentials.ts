@@ -2,7 +2,7 @@ import User, { UserSchemaType } from "../modules/user/user-models";
 import * as bcrypt from "bcryptjs";
 import constant from "../constant";
 const { errorMsgs } = constant;
-const { passError, emailError } = errorMsgs;
+const { passError, emailLoginError } = errorMsgs;
 let findByCredentials = async (
   email: string,
   password: string
@@ -10,12 +10,12 @@ let findByCredentials = async (
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new Error(passError);
+    throw new Error(emailLoginError);
   }
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    throw new Error(emailError);
+    throw new Error(passError);
   }
   return user;
 };

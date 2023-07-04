@@ -39,13 +39,7 @@ const userSchema = new Schema<UserSchemaType>(
     password: {
       type: String,
       required: true,
-      minlength: 7,
       trim: true,
-      validate(value: string) {
-        if (value.toLowerCase().includes("password")) {
-          throw new Error(passError);
-        }
-      },
     },
     age: {
       type: Number,
