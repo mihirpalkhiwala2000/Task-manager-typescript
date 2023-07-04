@@ -40,10 +40,6 @@ taskRouter.get("", auth, async (req: Request, res) => {
   const query: QueryType = req.query;
 
   const tasks = await displayTask(query, user._id);
-  console.log(
-    "🚀 ~ file: tasks-router.ts:42 ~ taskRouter.get ~ tasks:",
-    tasks.length
-  );
 
   try {
     res.send({ data: tasks });
@@ -59,12 +55,12 @@ taskRouter.get("/:id", auth, async (req, res) => {
     const task = await displayPartiTask(_id, user);
 
     if (!task) {
-      return res.status(notFoundC).send(notFound);
+      return res.status(notFoundC).send(noTaskError);
     }
 
     return res.send({ data: task });
   } catch (e) {
-    res.status(badRequestC).send(noTaskError);
+    res.status(badRequestC).send(badRequest);
   }
 });
 
@@ -82,7 +78,7 @@ taskRouter.patch("/:id", auth, async (req, res) => {
     const task = await findingUser(_id, user);
 
     if (!task) {
-      return res.status(notFoundC).send(notFound);
+      return res.status(notFoundC).send(noTaskError);
     }
 
     const rettask = await taskUpdate(task._id, req.body.data);
@@ -99,7 +95,7 @@ taskRouter.delete("/:id", auth, async (req, res) => {
     const task = await deleteTask(req.params.id, user._id);
 
     if (!task) {
-      return res.status(notFoundC).send(notFound);
+      return res.status(notFoundC).send(noTaskError);
     }
     res.send({ data: task });
   } catch (e) {
