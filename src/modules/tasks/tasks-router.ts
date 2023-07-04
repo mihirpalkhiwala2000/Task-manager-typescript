@@ -1,17 +1,14 @@
 import * as express from "express";
 import { Request } from "express";
 const taskRouter = express.Router();
-const app = express();
 export default taskRouter;
 import auth from "../../middleware/auth";
-import Task from "./task-models";
-import User from "../user/user-models";
 import constants from "../../constant";
 const { successMsgs, errorMsgs, statusCodes } = constants;
 const { success } = successMsgs;
 const { badRequest, serverError, notFound } = errorMsgs;
 const { createdC, badRequestC, notFoundC, serverErrorC } = statusCodes;
-import { querytype } from "./types";
+import { QueryType } from "./types";
 import {
   displayTask,
   validation,
@@ -39,14 +36,13 @@ taskRouter.post("", auth, (req, res) => {
 
 taskRouter.get("", auth, async (req: Request, res) => {
   const { user } = req.body;
-  const query: querytype = req.query;
+  const query: QueryType = req.query;
 
   const tasks = await displayTask(query, user._id);
 
   try {
     res.send({ data: tasks });
   } catch (e) {
-    console.log("🚀 ~ file: tasks-router.ts:58 ~ taskRouter.get ~ e:", e);
     res.status(serverErrorC).send(serverError);
   }
 });

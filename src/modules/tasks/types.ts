@@ -1,35 +1,19 @@
 import { ObjectId } from "mongoose";
-import { reqBodytype } from "../../utils/types";
-export interface reqQuerytype {
-  completed: string;
-  sortBy: string;
-  limit: string;
-  skip: string;
-  pageno: string;
-}
+import { ReqBodyType } from "../../utils/types";
 
-export interface tasktype {
-  description?: string;
-  completed?: boolean;
-  owner?: ObjectId;
-  _id?: ObjectId;
-  createdAt?: NativeDate;
-  updatedAt?: NativeDate;
-}
-
-export interface querytype {
+export interface QueryType {
   completed?: string;
   sortBy?: string;
-  pageno?: string;
+  pageNo?: string;
   limit?: string;
 }
 
-export interface displayQueryType {
+export interface DisplayQueryType {
   owner: string;
   completed?: string;
 }
 
-export interface createTaskReturnType {
-  reqBody: reqBodytype;
+export interface CreateTaskReturnType {
+  reqBody: ReqBodyType;
   owner: ObjectId;
 }

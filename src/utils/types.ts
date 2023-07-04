@@ -1,7 +1,7 @@
 import { ObjectId } from "mongoose";
-import { userschematype } from "../modules/user/user-models";
+import { UserSchemaType } from "../modules/user/user-models";
 
-export interface usertype {
+export interface UserType {
   _id: ObjectId;
   name: string;
   email: string;
@@ -15,17 +15,12 @@ export interface usertype {
   updatedAt: NativeDate;
 }
 
-export interface reqBodytype {
+export interface ReqBodyType {
   name: string;
   password: string;
 }
 
-export interface tokentype {
-  token: string;
-  _id: ObjectId;
-}
-
-export interface postuserreturntype {
-  user: userschematype;
+export interface PostUserReturnType {
+  user: UserSchemaType;
   token: string;
 }

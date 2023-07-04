@@ -3,6 +3,7 @@ const successMsgs = {
   successfulLogout: "You have successfully Logged out",
   created: "Created successfully",
   login: "Logged in successfully",
+  connected: "Connected Successfully",
 };
 
 const errorMsgs = {

@@ -1,11 +1,12 @@
-import User, { userschematype } from "./user-models";
+import User, { UserSchemaType } from "./user-models";
+import Task from "../tasks/task-models";
 import generate from "../../utils/generateTokensUtils";
 import findByCredentials from "../../utils/findByCredentials";
 import * as bcrypt from "bcryptjs";
 import { Request } from "express";
-import { usertype, reqBodytype, postuserreturntype } from "../../utils/types";
+import { UserType, ReqBodyType, PostUserReturnType } from "../../utils/types";
 
-export async function postuser(reqBody: Request): Promise<postuserreturntype> {
+export async function postUser(reqBody: Request): Promise<PostUserReturnType> {
   const user = new User(reqBody);
   const { password } = user;
 
@@ -19,7 +20,7 @@ export async function postuser(reqBody: Request): Promise<postuserreturntype> {
   return { user, token };
 }
 
-export async function userLogin(user: usertype): Promise<string> {
+export async function userLogin(user: UserType): Promise<string> {
   const token = await generate(user);
 
   return token;
@@ -37,9 +38,9 @@ export function validateUser(updates: string[]): Boolean {
 }
 
 export async function updateUser(
-  user: usertype,
-  reqBody: reqBodytype
-): Promise<userschematype | null> {
+  user: UserType,
+  reqBody: ReqBodyType
+): Promise<UserSchemaType | null> {
   let { password } = reqBody;
 
   if (password) {
@@ -54,15 +55,16 @@ export async function updateUser(
 export async function loginUser(
   email: string,
   password: string
-): Promise<postuserreturntype> {
-  const user: userschematype = await findByCredentials(email, password);
+): Promise<PostUserReturnType> {
+  const user: UserSchemaType = await findByCredentials(email, password);
   const token: string = await userLogin(user);
 
   return { user, token };
 }
 
-export async function deleteUser(requser_id: string): Promise<undefined> {
+export async function deleteUser(reqUser_id: string): Promise<undefined> {
   await User.findOneAndDelete({
-    _id: requser_id,
+    _id: reqUser_id,
   });
+  await Task.deleteMany({ owner: reqUser_id });
 }

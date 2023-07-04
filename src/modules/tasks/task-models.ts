@@ -1,12 +1,12 @@
 import { Schema, model } from "mongoose";
 
-export interface taskschematype {
+export interface TaskSchemaType {
   description: string;
   completed: boolean;
   owner: Schema.Types.ObjectId;
   _id: Schema.Types.ObjectId;
 }
-const taskSchema = new Schema<taskschematype>(
+const taskSchema = new Schema<TaskSchemaType>(
   {
     description: {
       type: String,

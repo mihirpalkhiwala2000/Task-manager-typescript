@@ -5,7 +5,7 @@ import { ObjectId } from "mongoose";
 const { errorMsgs } = constants;
 const { emailError, passError, ageError } = errorMsgs;
 
-export interface userschematype {
+export interface UserSchemaType {
   name: string;
   email: string;
   password: string;
@@ -16,7 +16,7 @@ export interface userschematype {
   updatedAt: NativeDate;
 }
 
-const userSchema = new Schema<userschematype>(
+const userSchema = new Schema<UserSchemaType>(
   {
     name: {
       type: String,

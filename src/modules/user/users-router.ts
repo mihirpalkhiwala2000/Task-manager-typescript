@@ -9,17 +9,17 @@ const { successfulLogout, created, login } = successMsgs;
 const { badRequest, serverError } = errorMsgs;
 const { createdC, badRequestC, serverErrorC } = statusCodes;
 import {
-  postuser,
+  postUser,
   validateUser,
   loginUser,
   updateUser,
   deleteUser,
 } from "./user-controller";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 
 userRouter.post("", async (req: Request, res: Response) => {
   try {
-    const { user, token } = await postuser(req.body);
+    const { user, token } = await postUser(req.body);
 
     res.status(createdC).send({
       data: user,
@@ -47,8 +47,8 @@ userRouter.post("/logout", auth, async (req, res) => {
   try {
     const { user } = req.body;
     const { token } = req.body;
-    user.tokens = user.tokens.filter((tokenin: { token: string }) => {
-      return tokenin.token !== token;
+    user.tokens = user.tokens.filter((tokenIn: { token: string }) => {
+      return tokenIn.token !== token;
     });
     await User.create(user);
 
@@ -79,7 +79,6 @@ userRouter.patch("/me", auth, async (req, res) => {
 
     res.send({ data: retuser });
   } catch (e) {
-    console.log("🚀 ~ file: users-router.ts:87 ~ userRouter.patch ~ e:", e);
     res.status(badRequestC).send(badRequest);
   }
 });

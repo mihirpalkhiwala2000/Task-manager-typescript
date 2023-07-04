@@ -1,4 +1,4 @@
-import User, { userschematype } from "../modules/user/user-models";
+import User, { UserSchemaType } from "../modules/user/user-models";
 import * as bcrypt from "bcryptjs";
 import constant from "../constant";
 const { errorMsgs } = constant;
@@ -6,7 +6,7 @@ const { passError, emailError } = errorMsgs;
 let findByCredentials = async (
   email: string,
   password: string
-): Promise<userschematype> => {
+): Promise<UserSchemaType> => {
   const user = await User.findOne({ email });
 
   if (!user) {
