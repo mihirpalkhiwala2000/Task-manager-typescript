@@ -8,6 +8,7 @@
     "build": "tsc -b",
     "test": " jest --config=jestconfig.json",
     "start": " nodemon dist/index.js",
+    "test:unit": "ENV_FILE=./config/.env.test jest",
     "tsc": "tsc"
   },
   "jest": {

@@ -20,7 +20,6 @@ import { Request, Response } from "express";
 
 userRouter.post("", async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { user, token } = await postUser(req.body);
 
     res.status(createdC).send({
