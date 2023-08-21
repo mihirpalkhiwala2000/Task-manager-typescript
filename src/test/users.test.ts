@@ -18,9 +18,11 @@ describe("POST /users", () => {
       count: 1,
     });
 
-    const response = await request(app).post("/users").send({
-      userDetails,
-    });
+    const response = await request(app)
+      .post("/users")
+      .send({
+        ...userDetails,
+      });
 
     expect(response.body).not.toBeNull;
     expect(response.statusCode).toBe(201);
