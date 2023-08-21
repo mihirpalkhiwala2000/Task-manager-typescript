@@ -18,7 +18,6 @@ import {
   taskUpdate,
   deleteTask,
 } from "./task-controller";
-import { Error } from "mongoose";
 
 taskRouter.post("", auth, (req, res) => {
   const { user } = req.body;

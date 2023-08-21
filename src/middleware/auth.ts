@@ -1,7 +1,5 @@
 import * as jwt from "jsonwebtoken";
 import User from "../modules/user/user-models";
-import * as dotenv from "dotenv";
-dotenv.config();
 import constants from "../constant";
 const { errorMsgs, statusCodes } = constants;
 const { unauthorized } = errorMsgs;
