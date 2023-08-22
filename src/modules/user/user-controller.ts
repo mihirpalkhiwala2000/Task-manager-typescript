@@ -28,7 +28,6 @@ export async function userLogin(user: UserType): Promise<string> {
 
 export function validateUser(updates: string[]): Boolean {
   const allowedUpdates = ["name", "email", "password", "age"];
-  updates = ["name", "password"];
 
   const isValidOperation = updates.every((update: string) => {
     return allowedUpdates.includes(update);

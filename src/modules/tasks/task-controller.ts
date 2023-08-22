@@ -41,12 +41,10 @@ export function validation(updates: string[]): boolean {
 
   return isValidOperation;
 }
-export function createTask(
-  reqBody: ReqBodyType,
-  owner: ObjectId
-): CreateTaskReturnType {
-  Task.create({ ...reqBody, owner });
-  return { reqBody, owner };
+export async function createTask(reqBody: ReqBodyType, owner: ObjectId) {
+  const createdTask = await Task.create({ ...reqBody, owner });
+
+  return { ...createdTask, owner };
 }
 
 export async function findingUser(
