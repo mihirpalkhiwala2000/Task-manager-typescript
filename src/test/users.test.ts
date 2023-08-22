@@ -141,6 +141,18 @@ describe("users", () => {
           .expect(400);
       }
     });
+    test("update profile information with no data", async () => {
+      const user = await User.findOne({ email: userDetails.email });
+      if (user) {
+        const { tokens } = user;
+
+        const response = await request(app)
+          .patch("/users/me")
+          .send({ name: "132" })
+          .set("Authorization", `Bearer ${tokens[0].token}`)
+          .expect(400);
+      }
+    });
 
     test("update profile information but wrong token", async () => {
       const response = await request(app)
@@ -169,6 +181,16 @@ describe("users", () => {
         .get("/users/me")
         .send({ data: { name: "Mihir" } })
         .set("Authorization", `Bearer wrongtoken`)
+        .expect(401);
+    });
+    test("check profile information but no such user found", async () => {
+      const response = await request(app)
+        .get("/users/me")
+        .send()
+        .set(
+          "Authorization",
+          `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGU0NTEwNTQ1YTBjY2I4ODNjYjNmMWUiLCJpYXQiOjE2OTI2ODQ1NDl9.fV10rTS0b-KZ6dkdYCVtJJL79vCp27NnyTR_Q1-MvTU`
+        )
         .expect(401);
     });
   });

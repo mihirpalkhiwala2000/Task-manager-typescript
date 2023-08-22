@@ -66,14 +66,14 @@ userRouter.get("/me", auth, async (req, res) => {
 });
 
 userRouter.patch("/me", auth, async (req, res) => {
-  const updates = Object.keys(req.body.data);
-
-  const isValidOperation = validateUser(updates);
-
-  if (!isValidOperation) {
-    return res.status(badRequestC).send(badRequest);
-  }
   try {
+    const updates = Object.keys(req.body.data);
+
+    const isValidOperation = validateUser(updates);
+
+    if (!isValidOperation) {
+      return res.status(badRequestC).send(badRequest);
+    }
     const { user } = req.body;
 
     const retuser = await updateUser(user, req.body.data);

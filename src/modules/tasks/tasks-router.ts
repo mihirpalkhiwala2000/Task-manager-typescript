@@ -19,14 +19,14 @@ import {
   deleteTask,
 } from "./task-controller";
 
-taskRouter.post("", auth, (req, res) => {
+taskRouter.post("", auth, async (req, res) => {
   const { user } = req.body;
 
   try {
     const reqBody = req.body;
     const owner = user._id;
 
-    const task = createTask(req.body, owner);
+    const task = await createTask(req.body, owner);
     delete req.body.user;
     res.status(createdC).send({ data: task, message: success });
   } catch (e: any) {
@@ -38,9 +38,8 @@ taskRouter.get("", auth, async (req: Request, res) => {
   const { user } = req.body;
   const query: QueryType = req.query;
 
-  const tasks = await displayTask(query, user._id);
-
   try {
+    const tasks = await displayTask(query, user._id);
     res.send({ data: tasks });
   } catch (e) {
     res.status(serverErrorC).send(serverError);
