@@ -44,7 +44,7 @@ export function validation(updates: string[]): boolean {
 }
 export async function createTask(reqBody: ReqBodyType, owner: ObjectId) {
   const createdTask = await Task.create({ ...reqBody, owner });
-  if (createdTask.completed === false) {
+  if (!createdTask.completed) {
     const { _id } = createdTask;
     const task = cron.schedule("*/1 * * * *", async () => {
       console.log("task completed");

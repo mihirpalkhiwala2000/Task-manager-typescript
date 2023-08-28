@@ -5,14 +5,16 @@ import findByCredentials from "../../utils/findByCredentials";
 import * as bcrypt from "bcryptjs";
 import { Request } from "express";
 import { UserType, ReqBodyType, PostUserReturnType } from "../../utils/types";
+import constant from "constant";
 import { redisClient } from "../../db/redis";
+const { otherConstants } = constant;
 
 export async function postUser(reqBody: Request): Promise<PostUserReturnType> {
   const user = new User(reqBody);
   const { password } = user;
-  const keyName = "user1";
+  const keyName = otherConstants.keyName;
 
-  if (user.isModified("password")) {
+  if (user.isModified(otherConstants.isModified)) {
     user.password = await bcrypt.hash(password, 8);
   }
 
