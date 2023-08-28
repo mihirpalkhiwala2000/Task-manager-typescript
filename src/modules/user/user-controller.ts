@@ -5,15 +5,21 @@ import findByCredentials from "../../utils/findByCredentials";
 import * as bcrypt from "bcryptjs";
 import { Request } from "express";
 import { UserType, ReqBodyType, PostUserReturnType } from "../../utils/types";
+import { redisClient } from "../../db/redis";
 
 export async function postUser(reqBody: Request): Promise<PostUserReturnType> {
   const user = new User(reqBody);
   const { password } = user;
+  const keyName = "user1";
 
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(password, 8);
   }
+
   await User.create(user);
+  redisClient.LPUSH(keyName, JSON.stringify(user));
+  const data = await redisClient.LRANGE(keyName, 0, -1);
+  console.log("🚀 ~ file: user-controller.ts:16 ~ postUser ~ data:", data);
 
   const token = await generate(user);
 
