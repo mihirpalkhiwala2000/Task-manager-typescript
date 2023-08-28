@@ -1,5 +1,6 @@
 import * as express from "express";
 import("./db/mongoose");
+import("./db/redis");
 const app = express();
 import userRouter from "./modules/user/users-router";
 import taskRouter from "./modules/tasks/tasks-router";

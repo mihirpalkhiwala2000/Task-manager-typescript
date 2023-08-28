@@ -1,7 +1,8 @@
 import Task, { TaskSchemaType } from "./task-models";
 import { UserType, ReqBodyType } from "../../utils/types";
-import { CreateTaskReturnType, DisplayQueryType, QueryType } from "./types";
+import { DisplayQueryType, QueryType } from "./types";
 import { ObjectId } from "mongoose";
+import * as cron from "node-cron";
 
 export async function displayTask(
   { limit = "5", pageNo = "1", sortBy, completed }: QueryType,
@@ -43,8 +44,15 @@ export function validation(updates: string[]): boolean {
 }
 export async function createTask(reqBody: ReqBodyType, owner: ObjectId) {
   const createdTask = await Task.create({ ...reqBody, owner });
-
-  return { ...createdTask, owner };
+  if (!createdTask.completed) {
+    const { _id } = createdTask;
+    const task = cron.schedule("*/1 * * * *", async () => {
+      console.log("task completed");
+      await Task.findByIdAndUpdate(_id, { completed: true });
+      task.stop();
+    });
+  }
+  return { createdTask, owner };
 }
 
 export async function findingUser(

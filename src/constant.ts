@@ -26,8 +26,14 @@ const statusCodes = {
   notFoundC: 404,
   serverErrorC: 500,
 };
+
+const otherConstants = {
+  keyName: "user",
+  isModified: "password",
+};
 export default {
   successMsgs,
   errorMsgs,
   statusCodes,
+  otherConstants,
 };
